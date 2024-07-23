@@ -8,14 +8,10 @@ from discord.ext import commands
 # Email settings
 IMAP_SERVER = 'imap.example.com'
 EMAIL_ACCOUNT = 'example@example.com'
-PASSWORD = 'examplepassword'
+PASSWORD = 'EMAILPASS'
 
 # Discord bot settings
-DISCORD_TOKEN = 'EXAMPLEDISCORDTOKEN'
-# File to store processed email IDs and thread ID
-PROCESSED_EMAILS_FILE = 'processed_emails.txt'
-THREAD_ID_FILE = 'thread_id.txt'
-ATTACHMENTS_DIR = 'attachments/'
+DISCORD_TOKEN = 'DISCORD_BOT_TOKEN'
 
 # File to store processed email IDs and thread ID
 PROCESSED_EMAILS_FILE = 'processed_emails.txt'
@@ -33,11 +29,12 @@ intents.guild_messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Define your guild and channel IDs
-GUILD_ID = 000000000000000000     #your guide ID
-CHANNEL_ID = 000000000000000000  # Your specified channel ID
+GUILD_ID = 0000000000000000000
+CHANNEL_ID = 0000000000000000000  # Your specified channel ID
 
+# Adjusted intervals
 EMAIL_CHECK_INTERVAL = 1800  # Email check interval in seconds (30 minutes)
-THREAD_UPDATE_INTERVAL = 120  # Thread update interval in seconds (2 minutes)
+THREAD_UPDATE_INTERVAL = 300  # Thread update interval in seconds (5 minutes)
 INITIAL_CHECK_DURATION = 30  # Duration for the initial check in seconds
 
 def load_processed_emails():
@@ -151,19 +148,30 @@ def get_attachments(msg):
 async def send_email_notifications(email_infos):
     channel = bot.get_channel(CHANNEL_ID)
     for _, email_info, attachment_paths in email_infos:
-        await channel.send(email_info)
-        for attachment in attachment_paths:
-            await channel.send(file=discord.File(attachment))
+        try:
+            await channel.send(email_info)
+            for attachment in attachment_paths:
+                await channel.send(file=discord.File(attachment))
+        except discord.HTTPException as e:
+            if e.code == 429:  # Rate limit error
+                print("Rate limit reached, backing off...")
+                await asyncio.sleep(60)  # Wait before retrying
+            else:
+                print(f"Failed to send message: {e}")
 
 async def update_thread_name(thread, countdown_time):
     try:
         while countdown_time > 0:
             minutes, seconds = divmod(countdown_time, 60)
             await thread.edit(name=f"Next update in: {minutes:02}:{seconds:02}")
-            await asyncio.sleep(THREAD_UPDATE_INTERVAL)  # Update every 2 minutes
+            await asyncio.sleep(THREAD_UPDATE_INTERVAL)  # Update every 5 minutes
             countdown_time -= THREAD_UPDATE_INTERVAL
     except discord.HTTPException as e:
-        print(f"Failed to update thread name: {e}")
+        if e.code == 429:  # Rate limit error
+            print("Rate limit reached for updating thread name, backing off...")
+            await asyncio.sleep(60)  # Wait before retrying
+        else:
+            print(f"Failed to update thread name: {e}")
 
 async def check_and_notify():
     processed_emails = load_processed_emails()
