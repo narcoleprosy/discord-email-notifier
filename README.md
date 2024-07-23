@@ -1,105 +1,129 @@
-### `README.md`
-
-```markdown
 # Discord Email Notification Bot
 
-A Discord bot that checks an email inbox at regular intervals, posts new emails to a specified Discord channel, and includes email details such as sender, subject, and a brief summary of the email body. The bot also handles email attachments and sends them to Discord.
+A Discord bot designed to check for new emails at regular intervals, send notifications about new emails
+
+to a Discord channel,and update a 
+Discord thread with a countdown to the next email check. It also supports attachments.
 
 ## Features
 
-- Checks for new emails in an inbox every 30 minutes.
-- Posts email details (sender, subject, and summary) to a specified Discord channel.
-- Handles and sends email attachments (e.g., photos) to Discord.
-- Avoids re-posting already processed emails.
-
-## Prerequisites
-
-- Python 3.8 or later
-- `discord.py` library
-- `imaplib` (standard library)
-- `email` (standard library)
-- A Discord bot token
-- Email account credentials
-```
-
-![](https://raw.githubusercontent.com/Rfkgaming89/discord-email-notification/main/Example.png )
+- **Email Checking:** Periodically checks for new emails.
+- **Email Notifications:** Sends notifications about new emails to a specified Discord channel.
+- **Thread Countdown:** Updates a Discord thread with a countdown to the next email check.
+- **Attachment Support:** Handles and sends email attachments.
 
 ## Installation
 
-1. **Clone the Repository**
+### 1. Clone the Repository
 
-   ```bash
-   git clone https://github.com/rfkgaming89/discord-email-notification.git
-   cd discord-email-notification
-   ```
+```
+git clone https://github.com/rfkgaming89/discord-email-notification.git
+cd discord-email-notification
+```
 
-2. **Install Dependencies**
+### 2. Set Up a Virtual Environment
 
-   Ensure you have Python 3.8+ installed. Install the required Python packages using pip:
+```
+python3 -m venv venv
+```
 
-   ```bash
-   pip install discord.py
-   ```
-
-3. **Configuration**
-
-   - Update the `Discord_Email.py` script with your email account credentials, Discord bot token, and the channel ID where the notifications will be sent:
-
-     ```python
-     # Email settings
-     IMAP_SERVER = 'imap.example.com'
-     EMAIL_ACCOUNT = 'your-email@example.com'
-     PASSWORD = 'your-password'
-
-     # Discord bot settings
-     DISCORD_TOKEN = 'your-discord-bot-token'
-     CHANNEL_ID = 123456789012345678  # Example channel ID
-     ```
-
-   - To change how often the bot checks for emails, modify the `await asyncio.sleep(1800)` line in the `check_and_notify()` function. The value `1800` is the time in seconds (30 minutes). For example, to check every 15 minutes, use `900` seconds:
-
-     ```python
-     await asyncio.sleep(900)  # Check every 15 minutes
-     ```
- - To adjust the length of the email body summary, modify the summarize_body() function. The default function limits the summary to 40 words. Change the 40 in the following line to your desired word count:
-
-   ```
-   words = body.split()
-   summary = ' '.join(words[:40])
-   ```
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 
-   - Ensure that the `attachments/` directory exists or will be created by the script:
+### 3. Install Dependencies
 
-     ```bash
-     mkdir attachments
-     ```
+```
+pip install discord.py
+```
 
-4. **Run the Script**
+## Configuration
 
-   Execute the script to start the bot:
+### Edit `email_bot.py`
 
-   ```bash
-   python bot_with_email_checker.py
-   ```
+Open the `email_bot.py` file and update the following settings:
 
-## Usage
+#### Email Settings
 
-Once running, the bot will check the email inbox at the specified interval and post any new emails to the specified Discord channel. It will also handle attachments, sending them to the channel along with the email details.
+```python
+IMAP_SERVER = 'imap.example.com'
+EMAIL_ACCOUNT = 'your-email@example.com'
+PASSWORD = 'YOUR EMAIL PASSWORD'
+```
 
-## Contributing
+- `IMAP_SERVER`: Your email provider's IMAP server address.
+- `EMAIL_ACCOUNT`: Your email address.
+- `PASSWORD`: Your email account password.
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes. Ensure that your code adheres to the project's style guidelines and includes tests where applicable.
+#### Discord Bot Settings
+
+```python
+DISCORD_TOKEN = 'YOUR DISCORD BOT TOKEN'
+GUILD_ID = 00000000000000000  # Your guild ID
+CHANNEL_ID = 00000000000000000  # Your specified channel ID
+```
+
+- `DISCORD_TOKEN`: Your Discord bot token.
+- `GUILD_ID`: Your Discord guild (server) ID.
+- `CHANNEL_ID`: The ID of the Discord channel where notifications will be sent.
+
+### Adjust Intervals
+
+Customize the bot's behavior by adjusting the following settings:
+
+- **Thread Update Interval:** The frequency of thread name updates with the countdown.
+
+  ```python
+  THREAD_UPDATE_INTERVAL = 120  # Update interval in seconds (2 minutes)
+  ```
+
+  Change `120` to your desired interval in seconds. For example, to update every minute:
+
+  ```python
+  THREAD_UPDATE_INTERVAL = 60  # Update interval in seconds (1 minute)
+  ```
+
+- **Email Check Interval:** How often the bot checks for new emails.
+
+  ```python
+  EMAIL_CHECK_INTERVAL = 1800  # Check interval in seconds (30 minutes)
+  ```
+
+  Change `1800` to your desired interval in seconds. For example, to check every 15 minutes:
+
+  ```python
+  EMAIL_CHECK_INTERVAL = 900  # Check interval in seconds (15 minutes)
+  ```
+
+- **Initial Check Duration:** Time the bot waits before starting periodic checks after initial startup.
+
+  ```python
+  INITIAL_CHECK_DURATION = 30  # Initial wait time in seconds
+  ```
+
+  Change `30` to your desired duration in seconds. For example, to wait 1 minute:
+
+  ```python
+  INITIAL_CHECK_DURATION = 60  # Initial wait time in seconds (1 minute)
+  ```
+
+## Running the Bot
+
+To start the bot, run:
+
+```bash
+python email_bot.py
+```
+
+The bot will log in and begin checking for new emails based on the configured intervals.
+
+## Notes
+
+- Ensure that your email account allows access from less secure apps if needed.
+- Verify that your Discord bot has the necessary permissions to send messages and manage threads in the specified channel.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Pull requests
-
-If you make changes to the script and want to open a Pull Request
-
-
-
-
+---
 
