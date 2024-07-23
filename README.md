@@ -11,7 +11,7 @@ Discord thread with a countdown to the next email check. It also supports attach
 - **Email Notifications:** Sends notifications about new emails to a specified Discord channel.
 - **Thread Countdown:** Updates a Discord thread with a countdown to the next email check.
 - **Attachment Support:** Handles and sends email attachments.
-
+![](https://raw.githubusercontent.com/Rfkgaming89/discord-email-notification/main/Example.png )
 ## Installation
 
 ### 1. Clone the Repository
