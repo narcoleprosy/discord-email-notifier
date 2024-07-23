@@ -28,13 +28,17 @@ os.makedirs(ATTACHMENTS_DIR, exist_ok=True)
 # Set up Discord client with intents
 intents = discord.Intents.default()
 intents.message_content = True
+intents.guilds = True
+intents.guild_messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Define your guild and channel IDs
-GUILD_ID = 0000000000000000000    # Your Guild ID
-CHANNEL_ID = 000000000000000 # Your specified channel ID
+GUILD_ID = 000000000000000000     #your guide ID
+CHANNEL_ID = 000000000000000000  # Your specified channel ID
 
-EMAIL_CHECK_INTERVAL = 1800  # Initial email check interval in seconds (30 minutes)
+EMAIL_CHECK_INTERVAL = 1800  # Email check interval in seconds (30 minutes)
+THREAD_UPDATE_INTERVAL = 120  # Thread update interval in seconds (2 minutes)
+INITIAL_CHECK_DURATION = 30  # Duration for the initial check in seconds
 
 def load_processed_emails():
     if os.path.exists(PROCESSED_EMAILS_FILE):
@@ -64,9 +68,16 @@ def check_email(processed_emails):
         mail.login(EMAIL_ACCOUNT, PASSWORD)
         mail.select('inbox')
 
-        # Search for all emails
-        status, data = mail.search(None, 'ALL')
+        # Search for new emails
+        status, data = mail.search(None, 'UNSEEN')
+        if status != 'OK':
+            print("Failed to search emails")
+            return new_emails
+
         email_ids = data[0].split()
+        if not email_ids:
+            print("No new emails found")
+            return new_emails
 
         for email_id in email_ids:
             email_id_str = email_id.decode()  # Convert byte to string
@@ -75,6 +86,10 @@ def check_email(processed_emails):
 
             # Fetch the email by ID
             status, msg_data = mail.fetch(email_id, '(RFC822)')
+            if status != 'OK':
+                print(f"Failed to fetch email ID {email_id_str}")
+                continue
+
             msg = email.message_from_bytes(msg_data[0][1])
 
             # Get email details
@@ -90,7 +105,7 @@ def check_email(processed_emails):
                 f"**Subject:** {subject}\n\n"
                 f"**Summary:**\n{summary}"
             )
-            new_emails.append((email_info, attachments))
+            new_emails.append((email_id_str, email_info, attachments))
 
             # Mark this email as processed
             save_processed_email(email_id_str)
@@ -133,48 +148,60 @@ def get_attachments(msg):
                 attachments.append(filepath)
     return attachments
 
-async def send_email_notification(email_info, attachments):
+async def send_email_notifications(email_infos):
     channel = bot.get_channel(CHANNEL_ID)
-    await channel.send(email_info)
-    for attachment in attachments:
-        await channel.send(file=discord.File(attachment))
+    for _, email_info, attachment_paths in email_infos:
+        await channel.send(email_info)
+        for attachment in attachment_paths:
+            await channel.send(file=discord.File(attachment))
 
 async def update_thread_name(thread, countdown_time):
-    while countdown_time > 0:
-        minutes, seconds = divmod(countdown_time, 60)
-        try:
+    try:
+        while countdown_time > 0:
+            minutes, seconds = divmod(countdown_time, 60)
             await thread.edit(name=f"Next update in: {minutes:02}:{seconds:02}")
-        except discord.HTTPException as e:
-            print(f"Failed to update thread name: {e}")
-        await asyncio.sleep(60)  # Update every 60 seconds
-        countdown_time -= 60
+            await asyncio.sleep(THREAD_UPDATE_INTERVAL)  # Update every 2 minutes
+            countdown_time -= THREAD_UPDATE_INTERVAL
+    except discord.HTTPException as e:
+        print(f"Failed to update thread name: {e}")
 
 async def check_and_notify():
     processed_emails = load_processed_emails()
     channel = bot.get_channel(CHANNEL_ID)
-    global EMAIL_CHECK_INTERVAL
 
+    # Initial email check on startup
+    print("Checking for new emails...")
+    new_emails = check_email(processed_emails)
+    if new_emails:
+        await send_email_notifications([(email_id, email_info, attachments) for email_id, email_info, attachments in new_emails])
+
+    # Create or fetch the thread after the initial check
     thread_id = load_thread_id()
     if thread_id:
         try:
             thread = discord.utils.get(channel.threads, id=int(thread_id))
             if not thread:
-                raise discord.NotFound
+                thread = await channel.create_thread(name="Next update in: 30:00", type=discord.ChannelType.public_thread)
+                save_thread_id(thread.id)
         except discord.NotFound:
             thread = await channel.create_thread(name="Next update in: 30:00", type=discord.ChannelType.public_thread)
             save_thread_id(thread.id)
     else:
         thread = await channel.create_thread(name="Next update in: 30:00", type=discord.ChannelType.public_thread)
         save_thread_id(thread.id)
-    
+
+    # Start the countdown timer and subsequent updates
+    await update_thread_name(thread, EMAIL_CHECK_INTERVAL)
+    await asyncio.sleep(INITIAL_CHECK_DURATION)  # Initial wait time before starting periodic updates
+
     while True:
+        await asyncio.sleep(EMAIL_CHECK_INTERVAL)  # Wait before checking emails
+        print("Checking for new emails...")
         new_emails = check_email(processed_emails)
-        for email_info, attachments in new_emails:
-            await send_email_notification(email_info, attachments)
-        
-        # Start or update the countdown timer
+        if new_emails:
+            await send_email_notifications([(email_id, email_info, attachments) for email_id, email_info, attachments in new_emails])
+
         await update_thread_name(thread, EMAIL_CHECK_INTERVAL)
-        await asyncio.sleep(EMAIL_CHECK_INTERVAL)  # Check every countdown_time seconds
 
 @bot.event
 async def on_ready():
