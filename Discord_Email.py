@@ -6,12 +6,12 @@ import os
 
 # Email settings
 IMAP_SERVER = 'imap.example.com'
-EMAIL_ACCOUNT = 'example@example.com'
+EMAIL_ACCOUNT = 'example@rfkgaming.com'
 PASSWORD = 'PASSWORD'
 
 # Discord bot settings
 DISCORD_TOKEN = 'DISCORD BOT TOKEN'
-CHANNEL_ID = 1234567890123456789  # Replace with your channel ID
+CHANNEL_ID = 123456789123466789  # Replace with your channel ID
 
 # File to store processed email IDs
 PROCESSED_EMAILS_FILE = 'processed_emails.txt'
