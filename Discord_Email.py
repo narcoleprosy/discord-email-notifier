@@ -6,12 +6,12 @@ import os
 
 # Email settings
 IMAP_SERVER = 'imap.example.com'
-EMAIL_ACCOUNT = 'your-email@example.com'
-PASSWORD = 'your-password'
+EMAIL_ACCOUNT = 'example@example.com'
+PASSWORD = 'PASSWORD'
 
 # Discord bot settings
-DISCORD_TOKEN = 'your-discord-bot-token'
-CHANNEL_ID = 123456789012345678  # Example channel ID
+DISCORD_TOKEN = 'DISCORD BOT TOKEN'
+CHANNEL_ID = 1234567890123456789  # Replace with your channel ID
 
 # File to store processed email IDs
 PROCESSED_EMAILS_FILE = 'processed_emails.txt'
@@ -124,7 +124,7 @@ async def check_and_notify():
         new_emails = check_email(processed_emails)
         for email_info, attachments in new_emails:
             await send_email_notification(email_info, attachments)
-        await asyncio.sleep(1800)  # Check every 30 minutes
+        await asyncio.sleep(60)  # Check every 30 minutes
 
 @client.event
 async def on_ready():
