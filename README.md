@@ -22,6 +22,8 @@ A Discord bot that checks an email inbox at regular intervals, posts new emails 
 - Email account credentials
 ```
 
+![](https://raw.githubusercontent.com/Rfkgaming89/discord-email-notification/main/Example.png )
+
 ## Installation
 
 1. **Clone the Repository**
