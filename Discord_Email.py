@@ -8,10 +8,14 @@ from discord.ext import commands
 # Email settings
 IMAP_SERVER = 'imap.example.com'
 EMAIL_ACCOUNT = 'example@example.com'
-PASSWORD = 'YOURPASSWORD'
+PASSWORD = 'examplepassword'
 
 # Discord bot settings
-DISCORD_TOKEN = 'DISCORD BOT TOKEN HERE'
+DISCORD_TOKEN = 'EXAMPLEDISCORDTOKEN'
+# File to store processed email IDs and thread ID
+PROCESSED_EMAILS_FILE = 'processed_emails.txt'
+THREAD_ID_FILE = 'thread_id.txt'
+ATTACHMENTS_DIR = 'attachments/'
 
 # File to store processed email IDs and thread ID
 PROCESSED_EMAILS_FILE = 'processed_emails.txt'
@@ -27,8 +31,8 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Define your guild and channel IDs
-GUILD_ID =   0000000000000000000  #  your guild id 
-CHANNEL_ID = 0000000000000000000  # Your specified channel ID
+GUILD_ID = 0000000000000000000    # Your Guild ID
+CHANNEL_ID = 000000000000000 # Your specified channel ID
 
 EMAIL_CHECK_INTERVAL = 1800  # Initial email check interval in seconds (30 minutes)
 
@@ -138,7 +142,10 @@ async def send_email_notification(email_info, attachments):
 async def update_thread_name(thread, countdown_time):
     while countdown_time > 0:
         minutes, seconds = divmod(countdown_time, 60)
-        await thread.edit(name=f"Next update in: {minutes:02}:{seconds:02}")
+        try:
+            await thread.edit(name=f"Next update in: {minutes:02}:{seconds:02}")
+        except discord.HTTPException as e:
+            print(f"Failed to update thread name: {e}")
         await asyncio.sleep(60)  # Update every 60 seconds
         countdown_time -= 60
 
@@ -150,8 +157,6 @@ async def check_and_notify():
     thread_id = load_thread_id()
     if thread_id:
         try:
-            # Fetch the existing thread from the channel
-            messages = [message async for message in channel.history(limit=1)]
             thread = discord.utils.get(channel.threads, id=int(thread_id))
             if not thread:
                 raise discord.NotFound
