@@ -1,38 +1,47 @@
+---
+
 # Discord Email Notification Bot
 
-A Discord bot designed to check for new emails at regular intervals, send notifications about new emails
-
-to a Discord channel,and update a 
-Discord thread with a countdown to the next email check. It also supports attachments.
+Hey there! This bot checks your email at regular intervals and sends you notifications in a Discord channel. Plus, it updates a Discord thread with a countdown to the next email check and supports attachments. Pretty cool, right?
 
 ## Features
 
-- **Email Checking:** Periodically checks for new emails.
-- **Email Notifications:** Sends notifications about new emails to a specified Discord channel.
-- **Thread Countdown:** Updates a Discord thread with a countdown to the next email check.
-- **Attachment Support:** Handles and sends email attachments.
-![](https://raw.githubusercontent.com/Rfkgaming89/discord-email-notification/main/Example.png )
-## Installation
+- **Email Checking:** Keeps an eye out for new emails.
+- **Email Notifications:** Alerts you in a specified Discord channel when new emails arrive.
+- **Thread Countdown:** Shows a countdown in a Discord thread for the next email check.
+- **Attachment Support:** Can handle and send email attachments.
+
+
+## Getting Started
 
 ### 1. Clone the Repository
 
-```
+First things first, grab the code from GitHub:
+
+```bash
 git clone https://github.com/rfkgaming89/discord-email-notification.git
 cd discord-email-notification
 ```
 
 ### 2. Set Up a Virtual Environment
 
-```
+Let’s create and activate a virtual environment to keep everything tidy:
+
+```bash
 python3 -m venv venv
 ```
 
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+Activate it with:
 
+```bash
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
 
 ### 3. Install Dependencies
 
-```
+Now, install the necessary Python packages:
+
+```bash
 pip install discord.py
 ```
 
@@ -40,7 +49,7 @@ pip install discord.py
 
 ### Edit `email_bot.py`
 
-Open the `email_bot.py` file and update the following settings:
+Open up `email_bot.py` and fill in your settings:
 
 #### Email Settings
 
@@ -50,80 +59,84 @@ EMAIL_ACCOUNT = 'your-email@example.com'
 PASSWORD = 'YOUR EMAIL PASSWORD'
 ```
 
-- `IMAP_SERVER`: Your email provider's IMAP server address.
+- `IMAP_SERVER`: Your email provider’s IMAP server.
 - `EMAIL_ACCOUNT`: Your email address.
-- `PASSWORD`: Your email account password.
+- `PASSWORD`: Your email password.
 
 #### Discord Bot Settings
 
 ```python
 DISCORD_TOKEN = 'YOUR DISCORD BOT TOKEN'
 GUILD_ID = 00000000000000000  # Your guild ID
-CHANNEL_ID = 00000000000000000  # Your specified channel ID
+CHANNEL_ID = 00000000000000000  # Your channel ID
 ```
 
-- `DISCORD_TOKEN`: Your Discord bot token.
-- `GUILD_ID`: Your Discord guild (server) ID.
-- `CHANNEL_ID`: The ID of the Discord channel where notifications will be sent.
+- `DISCORD_TOKEN`: Your bot’s token from Discord.
+- `GUILD_ID`: Your Discord server’s ID.
+- `CHANNEL_ID`: The ID of the channel where notifications will go.
 
 ### Adjust Intervals
 
-Customize the bot's behavior by adjusting the following settings:
+Customize how the bot behaves with these settings:
 
-- **Thread Update Interval:** The frequency of thread name updates with the countdown.
+- **Thread Update Interval:** How often the thread name updates with the countdown.
 
   ```python
-  THREAD_UPDATE_INTERVAL = 120  # Update interval in seconds (2 minutes)
+  THREAD_UPDATE_INTERVAL = 120  # Update every 2 minutes
   ```
 
-  Change `120` to your desired interval in seconds. For example, to update every minute:
+  Change `120` to your preferred interval in seconds. For instance, to update every minute:
 
   ```python
-  THREAD_UPDATE_INTERVAL = 60  # Update interval in seconds (1 minute)
+  THREAD_UPDATE_INTERVAL = 60  # Update every minute
   ```
 
-- **Email Check Interval:** How often the bot checks for new emails.
+- **Email Check Interval:** How frequently the bot checks for new emails.
 
   ```python
-  EMAIL_CHECK_INTERVAL = 1800  # Check interval in seconds (30 minutes)
+  EMAIL_CHECK_INTERVAL = 1800  # Check every 30 minutes
   ```
 
-  Change `1800` to your desired interval in seconds. For example, to check every 15 minutes:
+  Change `1800` to your desired interval. For example, every 15 minutes:
 
   ```python
-  EMAIL_CHECK_INTERVAL = 900  # Check interval in seconds (15 minutes)
+  EMAIL_CHECK_INTERVAL = 900  # Check every 15 minutes
   ```
 
-- **Initial Check Duration:** Time the bot waits before starting periodic checks after initial startup.
+- **Initial Check Duration:** How long the bot waits before it starts checking emails after you first run it.
 
   ```python
-  INITIAL_CHECK_DURATION = 30  # Initial wait time in seconds
+  INITIAL_CHECK_DURATION = 30  # Wait 30 seconds
   ```
 
-  Change `30` to your desired duration in seconds. For example, to wait 1 minute:
+  Adjust `30` to your preferred wait time. For example, to wait a minute:
 
   ```python
-  INITIAL_CHECK_DURATION = 60  # Initial wait time in seconds (1 minute)
+  INITIAL_CHECK_DURATION = 60  # Wait 60 seconds
   ```
 
 ## Running the Bot
 
-To start the bot, run:
+To start the bot, just run:
 
 ```bash
 python email_bot.py
 ```
 
-The bot will log in and begin checking for new emails based on the configured intervals.
+The bot will log in and start checking your email according to the intervals you set.
+
+## Docker Setup
+
+Prefer using Docker? No problem! Check out the [Docker setup instructions](https://github.com/Rfkgaming89/discord-email-notification/tree/docker) for a step-by-step guide.
 
 ## Notes
 
-- Ensure that your email account allows access from less secure apps if needed.
-- Verify that your Discord bot has the necessary permissions to send messages and manage threads in the specified channel.
+- Make sure your email account allows access from less secure apps if needed.
+- Ensure your Discord bot has the right permissions to send messages and manage threads in the specified channel.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
