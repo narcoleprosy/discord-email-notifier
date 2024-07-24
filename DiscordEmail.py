@@ -5,13 +5,13 @@ import email
 import os
 from discord.ext import commands
 
-# Email settings
-IMAP_SERVER = 'imap.example.com'
-EMAIL_ACCOUNT = 'example@example.com'
-PASSWORD = 'EMAILPASS'
+# Email settings from environment variables
+IMAP_SERVER = os.getenv('IMAP_SERVER')
+EMAIL_ACCOUNT = os.getenv('EMAIL_ACCOUNT')
+PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-# Discord bot settings
-DISCORD_TOKEN = 'DISCORD_BOT_TOKEN'
+# Discord bot settings from environment variables
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 # File to store processed email IDs and thread ID
 PROCESSED_EMAILS_FILE = 'processed_emails.txt'
@@ -28,9 +28,9 @@ intents.guilds = True
 intents.guild_messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Define your guild and channel IDs
-GUILD_ID = 0000000000000000000
-CHANNEL_ID = 0000000000000000000  # Your specified channel ID
+# Define your guild and channel IDs from environment variables
+GUILD_ID = int(os.getenv('GUILD_ID'))  # Ensure these are converted to integers
+CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
 # Adjusted intervals
 EMAIL_CHECK_INTERVAL = 1800  # Email check interval in seconds (30 minutes)
