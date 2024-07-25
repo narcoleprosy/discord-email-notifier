@@ -1,3 +1,4 @@
+
 ---
 
 # Discord Email Notification Bot
@@ -10,7 +11,6 @@ Hey there! This bot checks your email at regular intervals and sends you notific
 - **Email Notifications:** Alerts you in a specified Discord channel when new emails arrive.
 - **Thread Countdown:** Shows a countdown in a Discord thread for the next email check.
 - **Attachment Support:** Can handle and send email attachments.
-
 
 ## Getting Started
 
@@ -39,15 +39,23 @@ source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 
 ### 3. Install Dependencies
 
-Now, install the necessary Python packages:
+Install the necessary Python packages, including `python-dotenv` to manage environment variables:
 
 ```bash
-pip install discord.py
+pip install discord.py python-dotenv
 ```
 
-## Configuration
+### 4. Set Up the `.env` File
 
-### Edit `email_bot.py`
+You’ll need to configure your environment variables. First, copy the example file:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and add your IMAP server details, email credentials, Discord token, guild ID, and channel IDs.
+
+### 5. Edit `email_bot.py`
 
 Open up `email_bot.py` and fill in your settings:
 
@@ -75,7 +83,7 @@ CHANNEL_ID = 00000000000000000  # Your channel ID
 - `GUILD_ID`: Your Discord server’s ID.
 - `CHANNEL_ID`: The ID of the channel where notifications will go.
 
-### Adjust Intervals
+### 6. Adjust Intervals
 
 Customize how the bot behaves with these settings:
 
@@ -115,7 +123,7 @@ Customize how the bot behaves with these settings:
   INITIAL_CHECK_DURATION = 60  # Wait 60 seconds
   ```
 
-## Running the Bot
+### 7. Running the Bot
 
 To start the bot, just run:
 
@@ -124,6 +132,21 @@ python email_bot.py
 ```
 
 The bot will log in and start checking your email according to the intervals you set.
+
+### 8. Updating the Setup
+
+If you need to update the setup or make changes to the script, you can simply edit the `.env` file and restart the script. No need to rebuild anything.
+
+### 9. Troubleshooting
+
+If you encounter issues, check the following:
+
+- Ensure all environment variables in the `.env` file are correctly set.
+- Verify that your IMAP server and email credentials are correct.
+- Ensure your Discord bot token and channel IDs are valid.
+- Check the terminal for error messages and consult the [Discord API documentation](https://discord.com/developers/docs/intro) for more information.
+
+Feel free to reach out if you have any questions or run into any issues. Enjoy your setup!
 
 ## Docker Setup
 
@@ -139,4 +162,3 @@ Prefer using Docker? No problem! Check out the [Docker setup instructions](https
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
-
