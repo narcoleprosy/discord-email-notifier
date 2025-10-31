@@ -1,3 +1,8 @@
+# discord-email-notifier
+Discord bot that monitors an email address and sends updates to your server.
+
+This repo was forked from [Rfkgaming89's](https://github.com/Rfkgaming89/discord-email-notification) bot. I edited it to remove typos and other inconsistencies, and also to focus on windows as this is how I am running my bot. 
+
 
 ---
 
@@ -47,24 +52,18 @@ pip install discord.py python-dotenv
 
 ### 4. Set Up the `.env` File
 
-You’ll need to configure your environment variables. First, copy the example file:
-
-```bash
-cp .env.example .env
-```
-
 Open `.env` and add your IMAP server details, email credentials, Discord token, guild ID, and channel IDs.
 
-### 5. Edit `email_bot.py`
+### 5. Edit `Discord_Email.py`
 
-Open up `email_bot.py` and fill in your settings:
+Open up `Discord_Email.py` and fill in your settings:
 
 #### Email Settings
 
 ```python
 IMAP_SERVER = 'imap.example.com'
-EMAIL_ACCOUNT = 'your-email@example.com'
-PASSWORD = 'YOUR EMAIL PASSWORD'
+EMAIL_ACCOUNT = 'put@emailaddress.here'
+PASSWORD = 'password' # If using gmail, you will need to create an app password.
 ```
 
 - `IMAP_SERVER`: Your email provider’s IMAP server.
@@ -76,12 +75,14 @@ PASSWORD = 'YOUR EMAIL PASSWORD'
 ```python
 DISCORD_TOKEN = 'YOUR DISCORD BOT TOKEN'
 GUILD_ID = 00000000000000000  # Your guild ID
-CHANNEL_ID = 00000000000000000  # Your channel ID
+CHANNEL_ID = 0000000000000000000  # Your channel ID
+ROLE_ID = 0000000000000000000  # A role that you want to ping when a new email comes in
 ```
 
 - `DISCORD_TOKEN`: Your bot’s token from Discord.
 - `GUILD_ID`: Your Discord server’s ID.
 - `CHANNEL_ID`: The ID of the channel where notifications will go.
+= `ROLE_ID`: The ID of the role you want to ping with notifications.
 
 ### 6. Adjust Intervals
 
@@ -128,7 +129,7 @@ Customize how the bot behaves with these settings:
 To start the bot, just run:
 
 ```bash
-python email_bot.py
+python email_bot.py # If using windows, run the run.ps1 file with powershell instead
 ```
 
 The bot will log in and start checking your email according to the intervals you set.
@@ -156,9 +157,11 @@ Prefer using Docker? No problem! Check out the [Docker setup instructions](https
 
 - Make sure your email account allows access from less secure apps if needed.
 - Ensure your Discord bot has the right permissions to send messages and manage threads in the specified channel.
+- In an ideal situation, you use a burner email that only recieves emails from the service you are attempting to monitor. Be *VERY* careful using an email address that is known to server users, as they may be able to send emails to this account to bypass rules / automod, or can use any OTPs that arrive to gain access to accounts you probably don't want them to have access to.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
+
