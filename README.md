@@ -52,7 +52,9 @@ pip install discord.py python-dotenv
 
 ### 4. Set Up the `.env` File
 
-Open `.env` and add your IMAP server details, email credentials, Discord token, guild ID, and channel IDs.
+Open `env.txt` and add your IMAP server details, email credentials, Discord token, guild ID, and channel IDs.
+
+Rename `env.txt` to `.env`
 
 ### 5. Edit `Discord_Email.py`
 
