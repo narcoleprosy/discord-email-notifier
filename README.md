@@ -131,7 +131,7 @@ Customize how the bot behaves with these settings:
 To start the bot, just run:
 
 ```bash
-python email_bot.py # If using windows, run the run.ps1 file with powershell instead
+python Discord_Email.py # If using windows, run the run.ps1 file with powershell instead
 ```
 
 The bot will log in and start checking your email according to the intervals you set.
